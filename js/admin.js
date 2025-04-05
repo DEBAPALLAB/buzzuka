@@ -6,6 +6,7 @@ import {
     doc,
     onSnapshot,
     query,
+    deleteDoc,
     orderBy
   } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
   
@@ -43,8 +44,9 @@ import {
     });
   }
   
-  function renderOrders(orders) {
+  const renderOrders = (orders) => {
     ordersList.innerHTML = "";
+  
     orders.forEach((docSnap) => {
       const data = docSnap.data();
       const li = document.createElement("li");
@@ -53,16 +55,29 @@ import {
       li.innerHTML = `
         <strong>${data.name}</strong> - ${data.quantity} x ${data.drink} (₹${data.total})<br>
         Room: ${data.room}, Phone: ${data.phone}, BT ID: ${data.btid}<br>
-        <label><input type="checkbox" ${data.served ? "checked" : ""}/> Mark as Served</label>
+        <div class="order-actions">
+          <label><input type="checkbox" ${data.served ? "checked" : ""}/> Mark as Served</label>
+          <button class="delete-btn">🗑️</button>
+        </div>
       `;
   
+      // Toggle served status
       li.querySelector("input").addEventListener("change", async () => {
         await updateDoc(doc(window.db, "orders", docSnap.id), {
-          served: !data.served
+          served: !data.served,
         });
+      });
+  
+      // Delete order
+      li.querySelector(".delete-btn").addEventListener("click", async () => {
+        const confirmed = confirm("Are you sure you want to delete this order?");
+        if (confirmed) {
+          await deleteDoc(doc(window.db, "orders", docSnap.id));
+        }
       });
   
       ordersList.appendChild(li);
     });
-  }
+  };
+  
   
