@@ -59,7 +59,7 @@ form label {
 }
 
 input, select {
-  width: 100%;
+  width: 80%;
   padding: 0.6rem 1rem;
   margin-top: 0.3rem;
   border-radius: 0.8rem;
