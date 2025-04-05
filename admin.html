@@ -1,0 +1,35 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buzzuka Admin</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <header>
+    <h1>Buzzuka Admin</h1>
+    <button id="logout-btn">Logout</button>
+  </header>
+
+  <main>
+    <!-- Login Form -->
+    <section id="login-section">
+      <h2>Admin Login</h2>
+      <input type="email" id="admin-email" placeholder="Email" required />
+      <input type="password" id="admin-password" placeholder="Password" required />
+      <button id="login-btn">Login</button>
+    </section>
+
+    <!-- Orders List -->
+    <section id="orders-section" style="display:none;">
+      <h2>Orders</h2>
+      <ul id="orders-list"></ul>
+    </section>
+  </main>
+
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

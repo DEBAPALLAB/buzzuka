@@ -1,0 +1,53 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 1rem;
+    background: #fefefe;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #ff6f00;
+    color: white;
+  }
+  
+  main {
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  input, button, select {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  
+  button {
+    background-color: #ff6f00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    background: #f0f0f0;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .served {
+    background: #d1ffd1;
+    text-decoration: line-through;
+  }
+  

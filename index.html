@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buzzuka - Order Mocktails</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <header>
+    <h1>Buzzuka 🍹</h1>
+    <button id="admin-login">Admin Login</button>
+  </header>
+
+  <main>
+    <h2>Order Your Mocktail</h2>
+    <form id="order-form">
+      <label>Name: <input type="text" id="name" required /></label>
+      <label>Phone No: <input type="tel" id="phone" required /></label>
+      <label>Room No: <input type="text" id="room" required /></label>
+      <label>BT ID: <input type="text" id="btid" required /></label>
+
+      <label>Drink:
+        <select id="drink">
+          <option value="Orange Splash" data-price="40">Orange Splash - ₹40</option>
+        </select>
+      </label>
+
+      <label>
+        Quantity:
+        <div class="quantity-control">
+          <button type="button" id="decrease">-</button>
+          <input type="number" id="quantity" value="1" min="1" readonly />
+          <button type="button" id="increase">+</button>
+        </div>
+      </label>
+
+      <p>Total Price: ₹<span id="total-price">40</span></p>
+
+      <button type="submit">Place Order</button>
+    </form>
+  </main>
+
+  <script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/order.js"></script>
+</body>
+</html>
+
