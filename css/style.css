@@ -1,53 +1,184 @@
+/* css/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
 body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 1rem;
-    background: #fefefe;
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background: #fff5f7;
+  color: #333;
+  padding: 1rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ff7f50;
+  color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+#admin-login {
+  background: white;
+  color: #ff7f50;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+main {
+  max-width: 500px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+h2 {
+  text-align: center;
+  color: #ff5a5f;
+  margin-bottom: 1.5rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #555;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  margin-top: 0.3rem;
+  border-radius: 0.8rem;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantity-control button {
+  background: #ff7f50;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 1.2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.quantity-control input {
+  text-align: center;
+  width: 50px;
+  border: none;
+  background: #f7f7f7;
+  font-size: 1.1rem;
+}
+
+p {
+  font-weight: bold;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background: #ff5a5f;
+  color: white;
+  font-weight: bold;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background: #e6474b;
+}
+
+/* Admin Page Styles */
+#login-section, #orders-section {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+#orders-list {
+  list-style: none;
+  padding: 0;
+}
+
+#orders-list li {
+  background: #fefefe;
+  border: 1px solid #eee;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+#orders-list li.served {
+  background: #d1ffd1;
+  border-color: #a2f3a2;
+  opacity: 0.9;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 0.5rem;
+}
+
+#login-btn, #logout-btn {
+  width: 100%;
+  background: #ff7f50;
+  color: white;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 0.8rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+#login-btn:hover, #logout-btn:hover {
+  background: #e9644a;
+}
+
+@media (max-width: 500px) {
+  header h1 {
+    font-size: 1.2rem;
   }
-  
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: #ff6f00;
-    color: white;
-  }
-  
-  main {
-    max-width: 600px;
-    margin: auto;
-  }
-  
-  input, button, select {
-    display: block;
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
+
+  button, input, select {
     font-size: 1rem;
   }
-  
-  button {
-    background-color: #ff6f00;
-    color: white;
-    border: none;
-    border-radius: 5px;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    background: #f0f0f0;
-    margin-bottom: 1rem;
+
+  main, #login-section, #orders-section {
     padding: 1rem;
-    border-radius: 8px;
   }
-  
-  .served {
-    background: #d1ffd1;
-    text-decoration: line-through;
-  }
-  
+}
