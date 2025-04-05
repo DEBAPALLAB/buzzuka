@@ -47,8 +47,14 @@ import {
   const renderOrders = (orders) => {
     ordersList.innerHTML = "";
   
+    let total = 0;
+    let served = 0;
+  
     orders.forEach((docSnap) => {
+      total++;
       const data = docSnap.data();
+      if (data.served) served++;
+  
       const li = document.createElement("li");
       li.className = data.served ? "served" : "";
   
@@ -61,7 +67,7 @@ import {
         </div>
       `;
   
-      // Toggle served status
+      // Toggle served
       li.querySelector("input").addEventListener("change", async () => {
         await updateDoc(doc(window.db, "orders", docSnap.id), {
           served: !data.served,
@@ -78,6 +84,12 @@ import {
   
       ordersList.appendChild(li);
     });
+  
+    // Update stats
+    document.getElementById("total-count").textContent = total;
+    document.getElementById("served-count").textContent = served;
+    document.getElementById("pending-count").textContent = total - served;
   };
+  
   
   
