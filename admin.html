@@ -12,8 +12,10 @@
     <h1>Buzzuka Admin</h1>
     <button id="logout-btn">Logout</button>
   </header>
-
-  <main>
+  <div class="container" style="display: flex;">
+  <main style="display: flex;
+                justify-content: space-between;
+                ;">
     <!-- Login Form -->
     <section id="login-section">
       <h2>Admin Login</h2>
@@ -21,19 +23,43 @@
       <input type="password" id="admin-password" placeholder="Password" required />
       <button id="login-btn">Login</button>
     </section>
+    <div>
+    
+    
+      
+    
+    <!-- Orders List -->
+    <section id="orders-section" style="display:none; ">
+      <h2>Orders</h2>
+      <ul id="orders-list"></ul>
+    </section>
+    <section style="display: flex;">
+    </main>
 
-    <div id="order-stats" class="stats">
+        <main style="display: one
+        ;
+        justify-content: space-between;
+        gap: 2rem; 
+        ;">
+        <div>
+        <div id="extra-info" class="extras">
+            <div class="revenue">💰 Revenue Earned: ₹<span id="total-revenue">0</span></div>
+            <div class="floor-demo">
+            <h4>🏢 Floor Demographics</h4>
+            <ul id="floor-stats"></ul>
+            </div>
+        </div>
+        </div>
+        <div id="order-stats" class="stats" style="height: fit-content;">
         <div>Total Orders: <span id="total-count">0</span></div>
         <div>✅ Served: <span id="served-count">0</span></div>
         <div>⏳ Pending: <span id="pending-count">0</span></div>
       </div>
-      
-    <!-- Orders List -->
-    <section id="orders-section" style="display:none;">
-      <h2>Orders</h2>
-      <ul id="orders-list"></ul>
+    </div>
+    
     </section>
-  </main>
+</main>
+</div>
 
   <script type="module" src="js/firebase.js"></script>
   <script type="module" src="js/admin.js"></script>
