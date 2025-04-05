@@ -37,13 +37,13 @@ header h1 {
 }
 
 main {
-  max-width: 800px auto;
-  margin: 2rem;
-  background: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
+    max-width: 500px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
 
 h2 {
   text-align: center;
