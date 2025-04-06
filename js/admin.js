@@ -1,21 +1,13 @@
-// js/admin.js
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-
 import {
   collection,
   getDocs,
   doc,
   updateDoc,
+  deleteDoc,
   onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const auth = getAuth();
   const db = window.db;
 
   const loginSection = document.getElementById("login-section");
@@ -36,28 +28,23 @@ document.addEventListener("DOMContentLoaded", () => {
   let allOrders = [];
 
   loginBtn.onclick = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
-    } catch (err) {
-      alert("Login failed");
-      console.error(err);
-    }
-  };
+    const username = emailInput.value.trim().toLowerCase();
+    const password = passwordInput.value.trim();
 
-  logoutBtn.onclick = async () => {
-    await signOut(auth);
-  };
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
+    if (username === "buzz" && password === "301718") {
       loginSection.style.display = "none";
       ordersSection.style.display = "block";
+      document.getElementById("extra-info").style.display = "block";
+      document.getElementById("order-stats").style.display = "block";
       fetchOrders();
     } else {
-      loginSection.style.display = "block";
-      ordersSection.style.display = "none";
+      alert("Invalid credentials. Try buzz / 301718");
     }
-  });
+  };
+
+  logoutBtn.onclick = () => {
+    location.reload();
+  };
 
   function renderOrders() {
     ordersList.innerHTML = "";
@@ -75,11 +62,18 @@ document.addEventListener("DOMContentLoaded", () => {
       ).join("");
 
       li.innerHTML = `
-        <p><strong>${order.name}</strong> (${order.phone})</p>
-        <p>Room: ${order.room} | BT ID: ${order.btid}</p>
-        <ul>${drinksHTML}</ul>
+        <div class="order-header">
+          <strong>${order.name}</strong> (${order.phone})
+          <span class="room-btid">Room ${order.room} | BT ID: ${order.btid}</span>
+        </div>
+        <ul class="drink-list">${drinksHTML}</ul>
         <p><strong>Total: ₹${order.total}</strong></p>
-        <button data-id="${order.id}" class="status-btn">${order.served ? "✅ Served" : "⏳ Pending"}</button>
+        <div class="order-actions">
+          <button data-id="${order.id}" class="status-btn">
+            ${order.served ? "✅ Served" : "⏳ Pending"}
+          </button>
+          <button data-id="${order.id}" class="delete-btn">🗑️ Delete</button>
+        </div>
       `;
 
       ordersList.appendChild(li);
@@ -102,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
     servedCount.textContent = served;
     pendingCount.textContent = pending;
 
-    // Render floor stats
     floorStats.innerHTML = "";
     Object.entries(floorMap).forEach(([floor, count]) => {
       const li = document.createElement("li");
@@ -110,13 +103,22 @@ document.addEventListener("DOMContentLoaded", () => {
       floorStats.appendChild(li);
     });
 
-    // Attach toggle listeners
+    // Toggle Served Status
     document.querySelectorAll(".status-btn").forEach(btn => {
       btn.onclick = async () => {
         const order = allOrders.find(o => o.id === btn.dataset.id);
         if (!order) return;
-        const newServed = !order.served;
-        await updateDoc(doc(db, "orders", order.id), { served: newServed });
+        await updateDoc(doc(db, "orders", order.id), { served: !order.served });
+      };
+    });
+
+    // Delete Order
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+      btn.onclick = async () => {
+        const confirmDelete = confirm("Are you sure you want to delete this order?");
+        if (confirmDelete) {
+          await deleteDoc(doc(db, "orders", btn.dataset.id));
+        }
       };
     });
   }
@@ -129,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ...doc.data()
       }));
 
-      // Ensure backward compatibility: convert old single-drink format
       allOrders = allOrders.map(order => {
         if (!Array.isArray(order.drinks)) {
           return {

@@ -258,4 +258,70 @@ input[type="checkbox"] {
     border-radius: 8px;
     transition: all 0.3s ease;
   }
+  .order-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #fffefb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+  }
+  
+  .order-card:hover {
+    transform: scale(1.01);
+  }
+  
+  .order-header {
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .room-btid {
+    font-weight: normal;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .drink-list {
+    list-style: none;
+    padding-left: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  .order-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .order-actions button {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s ease;
+  }
+  
+  .status-btn {
+    background: #eee;
+  }
+  
+  .status-btn:hover {
+    background: #dcdcdc;
+  }
+  
+  .delete-btn {
+    background: #ff4d4d;
+    color: white;
+  }
+  
+  .delete-btn:hover {
+    background: #e60000;
+  }
+  
   
