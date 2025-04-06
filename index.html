@@ -20,34 +20,40 @@
       <label>Room No: <input type="text" id="room" required /></label>
       <label>BT ID: <input type="text" id="btid" required /></label>
 
-      <label>Drink:
-        <select id="drink">
-          <option value="Orange Splash" data-price="30">Orange Splash - ₹30</option>
-          <option value="Orange Splash" data-price="30">Orange Splash Masala - ₹30</option>
-          
-          <option value="Orange Splash" data-price="30">Mango Burst - ₹30</option>
-          <option value="Orange Splash" data-price="30">Mango Burst Masala - ₹30</option>
-          
-        </select>
-      </label>
+      <!-- Drinks section -->
+      <div id="drinks-container">
+        <!-- JS will populate this with drink rows -->
+      </div>
 
-      <label>
-        Quantity:
-        <div class="quantity-control">
-          <button type="button" id="decrease">-</button>
-          <input type="number" id="quantity" value="0" min="0" readonly />
-          <button type="button" id="increase">+</button>
-        </div>
-      </label>
+      <button type="button" id="add-drink">+ Add Another Drink</button>
 
       <p>Total Price: ₹<span id="total-price">0</span></p>
-
       <button type="submit">Order Now</button>
     </form>
   </main>
 
+  <!-- Hidden drink template -->
+  <template id="drink-template">
+    <div class="drink-row">
+      <select class="drink-select">
+        <option value="Orange Splash" data-price="30" data-desc="A zesty orange cooler to refresh your soul.">Orange Splash - ₹30</option>
+        <option value="Orange Splash Masala" data-price="30" data-desc="Citrus magic with a tangy masala twist.">Orange Splash Masala - ₹30</option>
+        <option value="Mango Burst" data-price="30" data-desc="Smooth mango flavor with summer vibes.">Mango Burst - ₹30</option>
+        <option value="Mango Burst Masala" data-price="30" data-desc="Classic mango delight with a kick of spice.">Mango Burst Masala - ₹30</option>
+      </select>
+
+      <div class="quantity-control">
+        <button type="button" class="decrease">-</button>
+        <input type="number" class="quantity" value="1" min="1" readonly />
+        <button type="button" class="increase">+</button>
+      </div>
+
+      <button type="button" class="remove-drink">🗑️</button>
+      <p class="drink-desc">A zesty orange cooler to refresh your soul.</p>
+    </div>
+  </template>
+
   <script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/order.js"></script>
+  <script type="module" src="js/order.js"></script>
 </body>
 </html>
-

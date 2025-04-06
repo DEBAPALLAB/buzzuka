@@ -1,116 +1,150 @@
 // js/admin.js
 import {
-    collection,
-    getDocs,
-    updateDoc,
-    doc,
-    onSnapshot,
-    query,
-    deleteDoc,
-    orderBy
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-  
-  // 🚨 Replace with your chosen email & password
-  const ADMIN_EMAIL = "buzz"; // <-- PUT YOUR EMAIL HERE
-  const ADMIN_PASS = "301718";     // <-- PUT YOUR PASSWORD HERE
-  
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  onSnapshot,
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const auth = getAuth();
+  const db = window.db;
+
   const loginSection = document.getElementById("login-section");
   const ordersSection = document.getElementById("orders-section");
   const ordersList = document.getElementById("orders-list");
-  
-  document.getElementById("login-btn").onclick = async () => {
-    const email = document.getElementById("admin-email").value;
-    const password = document.getElementById("admin-password").value;
-  
-    if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-      loginSection.style.display = "none";
-      ordersSection.style.display = "block";
-      loadOrders();
-    } else {
-      alert("Incorrect email or password.");
+
+  const emailInput = document.getElementById("admin-email");
+  const passwordInput = document.getElementById("admin-password");
+  const loginBtn = document.getElementById("login-btn");
+  const logoutBtn = document.getElementById("logout-btn");
+
+  const totalRevenue = document.getElementById("total-revenue");
+  const floorStats = document.getElementById("floor-stats");
+  const totalCount = document.getElementById("total-count");
+  const servedCount = document.getElementById("served-count");
+  const pendingCount = document.getElementById("pending-count");
+
+  let allOrders = [];
+
+  loginBtn.onclick = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+    } catch (err) {
+      alert("Login failed");
+      console.error(err);
     }
   };
-  
-  document.getElementById("logout-btn").onclick = () => {
-    loginSection.style.display = "block";
-    ordersSection.style.display = "none";
-    ordersList.innerHTML = "";
+
+  logoutBtn.onclick = async () => {
+    await signOut(auth);
   };
-  
-  function loadOrders() {
-    const q = query(collection(window.db, "orders"), orderBy("timestamp", "desc"));
-    onSnapshot(q, (snapshot) => {
-      renderOrders(snapshot.docs);
-    });
-  }
-  
-  const renderOrders = (orders) => {
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginSection.style.display = "none";
+      ordersSection.style.display = "block";
+      fetchOrders();
+    } else {
+      loginSection.style.display = "block";
+      ordersSection.style.display = "none";
+    }
+  });
+
+  function renderOrders() {
     ordersList.innerHTML = "";
-  
     let total = 0;
     let served = 0;
-    let revenue = 0;
+    let pending = 0;
     const floorMap = {};
-  
-    orders.forEach((docSnap) => {
-      total++;
-      const data = docSnap.data();
-      const isServed = data.served;
-      const floor = parseInt(data.room)?.toString()?.[0] || "Unknown";
-  
-      if (!floorMap[floor]) floorMap[floor] = 0;
-      floorMap[floor]++;
-  
-      if (isServed) {
-        served++;
-        revenue += data.total;
-      }
-  
+
+    allOrders.forEach((order) => {
       const li = document.createElement("li");
-      li.className = isServed ? "served" : "";
-  
+      li.className = "order-card";
+
+      const drinksHTML = order.drinks.map(d =>
+        `<li>${d.name} x ${d.quantity} - ₹${d.price * d.quantity}</li>`
+      ).join("");
+
       li.innerHTML = `
-        <strong>${data.name}</strong> - ${data.quantity} x ${data.drink} (₹${data.total})<br>
-        Room: ${data.room}, Phone: ${data.phone}, BT ID: ${data.btid}<br>
-        <div class="order-actions">
-          <label><input type="checkbox" ${isServed ? "checked" : ""}/> Mark as Served</label>
-          <button class="delete-btn">🗑️</button>
-        </div>
+        <p><strong>${order.name}</strong> (${order.phone})</p>
+        <p>Room: ${order.room} | BT ID: ${order.btid}</p>
+        <ul>${drinksHTML}</ul>
+        <p><strong>Total: ₹${order.total}</strong></p>
+        <button data-id="${order.id}" class="status-btn">${order.served ? "✅ Served" : "⏳ Pending"}</button>
       `;
-  
-      li.querySelector("input").addEventListener("change", async () => {
-        await updateDoc(doc(window.db, "orders", docSnap.id), {
-          served: !isServed,
-        });
-      });
-  
-      li.querySelector(".delete-btn").addEventListener("click", async () => {
-        if (confirm("Delete this order?")) {
-          await deleteDoc(doc(window.db, "orders", docSnap.id));
-        }
-      });
-  
+
       ordersList.appendChild(li);
+
+      if (order.served) {
+        total += order.total;
+        served++;
+      } else {
+        pending++;
+      }
+
+      const floor = order.room?.trim()[0];
+      if (floor && !isNaN(floor)) {
+        floorMap[floor] = (floorMap[floor] || 0) + 1;
+      }
     });
-  
-    // Stats
-    document.getElementById("total-count").textContent = total;
-    document.getElementById("served-count").textContent = served;
-    document.getElementById("pending-count").textContent = total - served;
-    document.getElementById("total-revenue").textContent = revenue;
-  
-    // Floor demographics
-    const floorStats = document.getElementById("floor-stats");
+
+    totalRevenue.textContent = total;
+    totalCount.textContent = allOrders.length;
+    servedCount.textContent = served;
+    pendingCount.textContent = pending;
+
+    // Render floor stats
     floorStats.innerHTML = "";
-    Object.keys(floorMap)
-      .sort()
-      .forEach((floor) => {
-        const li = document.createElement("li");
-        li.textContent = `Floor ${floor}: ${floorMap[floor]} orders`;
-        floorStats.appendChild(li);
+    Object.entries(floorMap).forEach(([floor, count]) => {
+      const li = document.createElement("li");
+      li.textContent = `Floor ${floor}: ${count} orders`;
+      floorStats.appendChild(li);
+    });
+
+    // Attach toggle listeners
+    document.querySelectorAll(".status-btn").forEach(btn => {
+      btn.onclick = async () => {
+        const order = allOrders.find(o => o.id === btn.dataset.id);
+        if (!order) return;
+        const newServed = !order.served;
+        await updateDoc(doc(db, "orders", order.id), { served: newServed });
+      };
+    });
+  }
+
+  function fetchOrders() {
+    const ordersRef = collection(db, "orders");
+    onSnapshot(ordersRef, (snapshot) => {
+      allOrders = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Ensure backward compatibility: convert old single-drink format
+      allOrders = allOrders.map(order => {
+        if (!Array.isArray(order.drinks)) {
+          return {
+            ...order,
+            drinks: [{
+              name: order.drink,
+              price: order.price,
+              quantity: order.quantity
+            }]
+          };
+        }
+        return order;
       });
-  };
-  
-  
-  
-  
+
+      renderOrders();
+    });
+  }
+});
