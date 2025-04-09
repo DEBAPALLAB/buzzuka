@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const username = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value.trim();
 
-    if (username === "buzz" && password === "301718") {
+    if (username === "buzz" && password === "tanishq") {
       loginSection.style.display = "none";
       ordersSection.style.display = "block";
       document.getElementById("extra-info").style.display = "block";
