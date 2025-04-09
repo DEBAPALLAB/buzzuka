@@ -1,14 +1,21 @@
 import {
   collection,
-  getDocs,
   doc,
   updateDoc,
   deleteDoc,
-  onSnapshot,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const db = window.db;
+  const auth = getAuth();
 
   const loginSection = document.getElementById("login-section");
   const ordersSection = document.getElementById("orders-section");
@@ -27,23 +34,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let allOrders = [];
 
-  loginBtn.onclick = async () => {
-    const username = emailInput.value.trim().toLowerCase();
-    const password = passwordInput.value.trim();
-
-    if (username === "buzz" && password === "tanishq") {
+  // Firebase Auth Listener
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
       loginSection.style.display = "none";
       ordersSection.style.display = "block";
       document.getElementById("extra-info").style.display = "block";
       document.getElementById("order-stats").style.display = "block";
       fetchOrders();
     } else {
-      alert("Invalid credentials. Try buzz / 301718");
+      loginSection.style.display = "block";
+      ordersSection.style.display = "none";
+      document.getElementById("extra-info").style.display = "none";
+      document.getElementById("order-stats").style.display = "none";
+    }
+  });
+
+  // Login
+  loginBtn.onclick = async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      alert("Invalid email or password.");
+      console.error(error);
     }
   };
 
-  logoutBtn.onclick = () => {
-    location.reload();
+  // Logout
+  logoutBtn.onclick = async () => {
+    await signOut(auth);
   };
 
   function renderOrders() {
@@ -54,44 +75,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const floorMap = {};
 
     allOrders
-  .sort((a, b) => a.served - b.served)
-  .forEach((order) => {
-      const li = document.createElement("li");
-      li.className = "order-card";
+      .sort((a, b) => a.served - b.served)
+      .forEach((order) => {
+        const li = document.createElement("li");
+        li.className = "order-card";
 
-      const drinksHTML = order.drinks.map(d =>
-        `<li>${d.name} x ${d.quantity} - ₹${d.price * d.quantity}</li>`
-      ).join("");
+        const drinksHTML = order.drinks.map(d =>
+          `<li>${d.name} x ${d.quantity} - ₹${d.price * d.quantity}</li>`
+        ).join("");
 
-      li.innerHTML = `
-        <div class="order-header">
-          <strong>${order.name}</strong> (${order.phone})
-          <span class="room-btid">Room ${order.room} | BT ID: ${order.btid}</span>
-        </div>
-        <ul class="drink-list">${drinksHTML}</ul>
-        <p><strong>Total: ₹${order.total}</strong></p>
-        <div class="order-actions">
-          <button data-id="${order.id}" class="status-btn">
-            ${order.served ? "✅ Served" : "⏳ Pending"}
-          </button>
-          <button data-id="${order.id}" class="delete-btn">🗑️ Delete</button>
-        </div>
-      `;
+        li.innerHTML = `
+          <div class="order-header">
+            <strong>${order.name}</strong> (${order.phone})
+            <span class="room-btid">Room ${order.room} | BT ID: ${order.btid}</span>
+          </div>
+          <ul class="drink-list">${drinksHTML}</ul>
+          <p><strong>Total: ₹${order.total}</strong></p>
+          <div class="order-actions">
+            <button data-id="${order.id}" class="status-btn">
+              ${order.served ? "✅ Served" : "⏳ Pending"}
+            </button>
+            <button data-id="${order.id}" class="delete-btn">🗑️ Delete</button>
+          </div>
+        `;
 
-      ordersList.appendChild(li);
+        ordersList.appendChild(li);
 
-      if (order.served) {
-        total += order.total;
-        served++;
-      } else {
-        pending++;
-      }
+        if (order.served) {
+          total += order.total;
+          served++;
+        } else {
+          pending++;
+        }
 
-      const floor = order.room?.trim()[0];
-      if (floor && !isNaN(floor)) {
-        floorMap[floor] = (floorMap[floor] || 0) + 1;
-      }
-    });
+        const floor = order.room?.trim()[0];
+        if (floor && !isNaN(floor)) {
+          floorMap[floor] = (floorMap[floor] || 0) + 1;
+        }
+      });
 
     totalRevenue.textContent = total;
     totalCount.textContent = allOrders.length;
@@ -105,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       floorStats.appendChild(li);
     });
 
-    // Toggle Served Sta
+    // Toggle Served
     document.querySelectorAll(".status-btn").forEach(btn => {
       btn.onclick = async () => {
         const order = allOrders.find(o => o.id === btn.dataset.id);
