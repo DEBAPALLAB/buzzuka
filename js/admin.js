@@ -53,7 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let pending = 0;
     const floorMap = {};
 
-    allOrders.forEach((order) => {
+    allOrders
+  .sort((a, b) => a.served - b.served)
+  .forEach((order) => {
       const li = document.createElement("li");
       li.className = "order-card";
 
