@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const drinkTemplate = document.getElementById("drink-template");
   const addDrinkBtn = document.getElementById("add-drink");
 
-  // 🧠 Helper: Add a new drink row
+  // 🧠 Helper: Add a new
   const addDrinkRow = () => {
     const clone = drinkTemplate.content.cloneNode(true);
     const row = clone.querySelector(".drink-row");

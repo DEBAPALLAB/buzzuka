@@ -4,7 +4,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/fireba
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-// ✅ Your actual Firebase config goes here:
+// ✅ Your actual Firebase config goe
 const firebaseConfig = {
     apiKey: "AIzaSyD8ph7bUPeAVHlsLErR3YSxBTX2GmZq2Ng",
     authDomain: "buzzuka-fbdcb.firebaseapp.com",

@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       floorStats.appendChild(li);
     });
 
-    // Toggle Served Status
+    // Toggle Served Sta
     document.querySelectorAll(".status-btn").forEach(btn => {
       btn.onclick = async () => {
         const order = allOrders.find(o => o.id === btn.dataset.id);
