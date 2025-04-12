@@ -94,7 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
       drinks,
       total,
       served: false,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
+      orderTime: new Date().toLocaleString()
     };
 
     try {

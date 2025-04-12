@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <ul class="drink-list">${drinksHTML}</ul>
           <p><strong>Total: ₹${order.total}</strong></p>
+          <p><strong>Time:</strong> ${order.orderTime || "⏳ Awaiting time record"}</p>
           <div class="order-actions">
             <button data-id="${order.id}" class="status-btn">
               ${order.served ? "✅ Served" : "⏳ Pending"}
